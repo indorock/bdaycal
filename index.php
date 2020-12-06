@@ -97,7 +97,7 @@ foreach($contacts as $contact){
     $dt_bday_now = new DateTime($output_year.'-'.$dt_bday->format('m-d'));
     $str_bday_now = $dt_bday_now->format('Y-m-d');
     $age = $dt_bday_now->diff($dt_bday);
-    if(!is_array($bdays[$str_bday_now]))
+    if(!array_key_exists($str_bday_now, $bdays) || !is_array($bdays[$str_bday_now]))
         $bdays[$str_bday_now] = [];
     $bdays[$str_bday_now][] = ['name' => $contact['Name'], 'age' => $age->y];
 }
