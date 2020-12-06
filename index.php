@@ -1,6 +1,6 @@
 <style type="text/css">
     *,html,body{
-        font-family: "sans-serif";
+        font-family: Futura, sans-serif;
         margin:0;
         padding:0;
     }
