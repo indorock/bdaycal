@@ -1,6 +1,6 @@
 <style type="text/css">
     *,html,body{
-        font-family: Sans-serif;
+        font-family: "sans-serif";
         margin:0;
         padding:0;
     }
@@ -34,7 +34,7 @@
     table.month tbody td{
         border: 1px solid;
         border-collapse:collapse;
-        padding:0px;
+        padding:0;
         font-size:14px;
         width:39mm;
         height:36mm;
@@ -113,9 +113,9 @@ $period = new DatePeriod($dt_start, new DateInterval('P1M'), $dt_end);
 foreach($period as $dt_month){
     $month = $dt_month->format('m');
     $monthname = $dt_month->format('F');
-    $daysinmonth = $dt_month->format('t');
+    $daysinmonth = (int)$dt_month->format('t');
     $date = 1;
-    $first_day_of_month = $dt_month->format('N');
+    $first_day_of_month = (int)$dt_month->format('N');
     $weeksinmonth = ceil(($first_day_of_month+$daysinmonth-1)/7);
 ?>
 <table class="month">
