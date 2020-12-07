@@ -36,7 +36,7 @@ class Contacts{
             $bday = trim($contact['Birthday']);
             if(!$bday)
                 continue;
-            if(strpos($bday, '--') === 0 || $contact['noyear']){
+            if(strpos($bday, '--') === 0 || (isset($contact['noyear']) && $contact['noyear'])){
                 $dt_bday_now = new DateTime($this->output_year.'-'.substr($bday,2));
                 $age = null;
             }else{

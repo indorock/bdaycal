@@ -89,6 +89,7 @@ EOT;
         $html2pdf = new Html2Pdf('L','A4', 'en', true,'UTF-8', [0,0,0,0]);
         $html2pdf->writeHTML($ret);
         $html2pdf->output();
+        return false;
     }
 
 }
