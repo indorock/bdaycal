@@ -1,3 +1,3 @@
 <?php
 require('./calendar.php');
-show_calendar(@$_GET['pdf']);
+show_calendar(isset($_GET['pdf']));
