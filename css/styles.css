@@ -71,3 +71,38 @@ table.month td div.day div.event{
 table.month td div.day div.birthday div, table.month td div.day div.deathdate div, table.month td div.day div.event div{
     padding:5px;
 }
+
+#menu{
+    background-color:#88aadd;
+    padding:10px 30px;
+    height: 30px;
+}
+
+#menu select#yearselect, #menu #monthselect, #nowlink{
+    float:left;
+    margin-right:30px;
+}
+
+#menu #monthselect div{
+    float:left;
+    margin-right:10px;
+}
+
+#menu #monthselect div a{
+    color: #333333;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#menu #nowlink a{
+    color: #337755;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#menu #pdflink a{
+    color: #773355;
+    font-weight: bold;
+    text-decoration: none;
+}
+

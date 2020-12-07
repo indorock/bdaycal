@@ -7,30 +7,36 @@ use Spipu\Html2Pdf\Html2Pdf;
 class Cal{
 
     protected $output_year = null;
+    protected $output_month = null;
     protected $contacts = null;
 
     public function __construct($output_year){
         $this->output_year = $output_year ?? date('Y');
-        $this->contacts = new Contacts($output_year, './data/contacts-moeder.vcf');
+        $this->contacts = new Contacts($this->output_year, './data/contacts-moeder.vcf');
         $calendars = [
           ['name' => 'events-moeder', 'file' => './data/events-moeder.ics', 'whitelist' => []],
           ['name' => 'canada-holidays', 'file' => 'https://www.officeholidays.com/ics-clean/canada', 'clean_labels' => true, 'whitelist' => ["st. patrick's day","victoria day","canada day","thanksgiving","remembrance day"]],
           ['name' => 'nl-holidays', 'file' => './data/nl-feestdagen.ics', 'whitelist' => []]
         ];
         foreach($calendars as $cal)
-            $this->calendars[] = new Events($output_year, $cal);
+            $this->calendars[] = new Events($this->output_year, $cal);
     }
 
-    public function show($as_pdf= false, $now = false){
+    public function show($as_pdf= false, $month = null){
+        $this->output_month = $month;
+
         $ret = '';
         if($as_pdf)
             $ret .= '<link href="css/styles_pdf.css" rel="stylesheet" type="text/css" />';
+        else {
+            $ret .= $this->shownav();
+        }
         $bdays = $this->contacts->parse();
         $events = [];
         foreach($this->calendars as $calendar)
             $events = array_merge_recursive($events, $calendar->parse());
-        if($now){
-            $dt_start = new DateTime('first day of this month');
+        if($month){
+            $dt_start = new DateTime('01-'.str_pad($month, 2, '0', STR_PAD_LEFT).'-'.$this->output_year);
             $dt_end = clone $dt_start;
             $dt_end->modify('+1 month');
         }else{
@@ -106,6 +112,41 @@ EOT;
         $html2pdf->writeHTML($ret);
         $html2pdf->output();
         return false;
+    }
+
+    public function shownav(){
+        $baseurl = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+        $dt = new DateTime();
+        $year = $dt->format('Y');
+        $start_year = $year - 5;
+        $end_year = $year + 1;
+        $ret = '<div id="menu">';
+        // year dropdown
+        $ret .= '<select id="yearselect">';
+        for($y=$start_year;$y<=$end_year;$y++){
+            $ret .= '<option'. ($this->output_year == $y ? ' selected="true"':'') .' value="'. $y .'">'. $y .'</option>';
+        }
+        $ret .= '</select>';
+
+        // month paging
+        if($this->output_month){
+            $dt = new DateTime('01-'.$this->output_month.'-'.$this->output_year);
+            $dt_prev = clone $dt;
+            $dt_next = clone $dt;
+            $interval = new DateInterval('P1M');
+            $dt_prev->sub($interval);
+            $dt_next->add($interval);
+            $ret .= '<div id="monthselect">';
+            $ret .= '<div><a href="'.$baseurl.'?y='.$dt_prev->format('Y').'&m='.$dt_prev->format('m').'">Previous</a></div>';
+            $ret .= '<div>|</div>';
+            $ret .= '<div><a href="'.$baseurl.'?y='.$dt_next->format('Y').'&m='.$dt_next->format('m').'">Next</a></div>';
+            $ret .= '</div>';
+        }
+
+        $ret .= '<div id="nowlink"><a href="'.$baseurl.'?now">CURRENT MONTH</a></div>';
+        $ret .= '<div id="pdflink"><a target="_blank" href="'.$baseurl.'?pdf&y='.$this->output_year.'">VIEW PDF</a></div>';
+        $ret .= '</div>';
+        return $ret;
     }
 
 }

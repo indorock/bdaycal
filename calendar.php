@@ -5,12 +5,23 @@ require('./model/cal.php');
 
 function show_calendar(){
     $as_pdf = isset($_GET['pdf']);
-    $now = isset($_GET['now']);
-    $year = isset($_GET['y']) && !$now ? (int)$_GET['y'] : (int)date('Y');
+    $month = null;
+    $year = null;
+
+    if(isset($_GET['y']))
+        $year = (int)$_GET['y'];
+    if(isset($_GET['m']))
+        $month = (int)$_GET['m'];
+
+    if(isset($_GET['now'])) {
+        $month = (int)date('m');
+        $year = (int)date('Y');
+    }
+
     $cal = new Cal($year);
     if(!$as_pdf)
         include('./templates/head.php');
-    echo $cal->show($as_pdf, $now);
+    echo $cal->show($as_pdf, $month);
     if(!$as_pdf)
         include('./templates/end.php');
 }

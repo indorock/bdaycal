@@ -3,6 +3,10 @@
     padding:0;
 }
 
+body{
+    text-align: center;
+}
+
 table.month{
     border: 2px solid;
     border-collapse:collapse;
