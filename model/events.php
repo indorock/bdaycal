@@ -11,7 +11,7 @@ class Events{
 
     public function __construct($output_year, $calendar_data) {
         $file = $calendar_data['file'];
-        $this->clean_labels = $calendar_data['clean_labels'];
+        $this->clean_labels = isset($calendar_data['clean_labels']);
         if(isset($calendar_data['whitelist']))
             $this->whitelist = $calendar_data['whitelist'];
 
@@ -53,7 +53,7 @@ class Events{
                 $name = trim(preg_replace('/\([^()]+\)/','',$name));
             if(count($this->whitelist) && !in_array(strtolower($name), $this->whitelist))
                 continue;
-            if($event['yearswed']){
+            if(isset($event['yearswed'])){
                 $name = substr($name, 0, strpos($name,"Anniversary")) . $this->addOrdinalNumberSuffix($event['yearswed']) . ' Anniversary';
             }
             $ret[$date][] = ['name' => $name];

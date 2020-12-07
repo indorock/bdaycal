@@ -40,9 +40,9 @@ class Contacts{
     }
 
     protected function getDateData($contact, &$ret, $key = 'Birthday'){
-        $day = trim($contact[$key]);
-        if(!$day)
+        if(!isset($contact[$key]))
             return $ret;
+        $day = trim($contact[$key]);
         if(strpos($day, '--') === 0 || (isset($contact['noyear']) && $contact['noyear'])){
             $dt_now = new DateTime($this->output_year.'-'.substr($day,2));
             $age = null;
