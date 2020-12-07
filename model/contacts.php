@@ -43,18 +43,25 @@ class Contacts{
         if(!isset($contact[$key]))
             return $ret;
         $day = trim($contact[$key]);
+        $age = null;
         if(strpos($day, '--') === 0 || (isset($contact['noyear']) && $contact['noyear'])){
             $dt_now = new DateTime($this->output_year.'-'.substr($day,2));
-            $age = null;
         }else{
             $dt_day = new DateTime($day);
             $dt_now = new DateTime($this->output_year.'-'.$dt_day->format('m-d'));
-            $age = $dt_now->diff($dt_day)->y;
+            $dt_diff = $dt_day->diff($dt_now);
+            $age = $dt_diff->format('%r%y');
         }
+        if($key == 'Deathdate' && $age<0)
+            return $ret;
+
         $str_now = $dt_now->format('Y-m-d');
         $arr = ['name' => $contact['Name'], 'age' => $age, strtolower($key) => $str_now];
-        if(isset($contact['Deathdate']))
-            $arr['deceased'] = true;
+        if(isset($contact['Deathdate'])){
+            $dt_death = new DateTime($contact['Deathdate']);
+            if($dt_now > $dt_death)
+                $arr['deceased'] = true;
+        }
         if(!array_key_exists($str_now, $ret) || !is_array($ret[$str_now]))
             $ret[$str_now] = [];
         $ret[$str_now][] = $arr;
