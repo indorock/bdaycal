@@ -85,7 +85,7 @@ EOT;
                         }
                         if(array_key_exists($fulldate, $events)){
                             foreach($events[$fulldate] as $event){
-                                $ret .= '<div class="event"><div>'. $event['name']."</div></div>\r\n";
+                                $ret .= '<div class="event"><div>'. $event."</div></div>\r\n";
                             }
                         }
                         $ret .= "</div>\r\n";

@@ -56,7 +56,7 @@ class Events{
             if(isset($event['yearswed'])){
                 $name = substr($name, 0, strpos($name,"Anniversary")) . $this->addOrdinalNumberSuffix($event['yearswed']) . ' Anniversary';
             }
-            $ret[$date][] = ['name' => $name];
+            $ret[$date][] = $name;
             $ret[$date] = array_unique($ret[$date]);
         }
         return $ret;
