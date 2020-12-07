@@ -67,7 +67,7 @@ EOT;
                         if(array_key_exists($fulldate, $bdays)){
                             foreach($bdays[$fulldate] as $bday){
                                 $name = preg_replace('/([A-Za-z]+) ([A-Za-z])(.+)/','$1 $2.',$bday['name']);
-                                if($bday['birthday']){
+                                if(isset($bday['birthday'])){
                                     $ret .= '<div class="birthday"><div>'. $name;
                                     if($bday['age']){
                                         if(isset($bday['deceased']) && $bday['deceased'] == true)
