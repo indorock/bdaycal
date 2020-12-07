@@ -61,7 +61,7 @@ table.month td div.day span.date{
 }
 
 table.month td div.day div.birthday, table.month td div.day div.deathdate, table.month td div.day div.event{
-    background:#99aadd;
+    background:#aaccff;
     font-size:12px;
     display:block;
     width:39mm;
@@ -73,7 +73,7 @@ table.month td div.day div.deathdate{
 }
 
 table.month td div.day div.event{
-    background: #99ddaa;
+    background: #aaffcc;
 }
 
 table.month td div.day div.birthday div, table.month td div.day div.deathdate div, table.month td div.day div.event div{
