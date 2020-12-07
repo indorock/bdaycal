@@ -1,4 +1,3 @@
-<pre>
 <?php
 require('./model/iCal.php');
 

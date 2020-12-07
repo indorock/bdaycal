@@ -420,6 +420,29 @@ class iCal_Event
           ? $this->recurrence->interval
           : 1;
 
+        if(isset($this->recurrence->byday)){
+            $str = $this->recurrence->byday[0];
+            $last = false;
+            if(strpos($str, '-') === 0){
+                $last = true;
+                $str = ltrim($str, '-');
+            }
+            $ordinals = [1 => 'first', 2 => 'second', 3 => 'third', 4 => 'fourth'];
+            preg_match('/([0-9]+)([A-Z]{2,3})/',$str, $m);
+            $ordinal = $m[1];
+            $day = $m[2];
+            $ordinal_name = $ordinals[$ordinal];
+            $dayname = $this->getDaynames($day);
+            if($last){
+                if($ordinal == 1)
+                    $ordinal_name = 'last';
+                else
+                    $ordinal_name .= 'last';
+            }
+            $offset += (3600 * 24 *365);
+            $datedesc = $ordinal_name." ".$dayname. " of ".date('M Y', $offset);
+            return strtotime($datedesc);
+        }
         return strtotime("+{$interval} year", $offset);
     }
 
@@ -478,19 +501,10 @@ class iCal_Event
           ? strtotime('last monday', $offset)
           : $offset;
 
-        $daysname = array(
-          'MO' => 'monday',
-          'TU' => 'tuesday',
-          'WE' => 'wednesday',
-          'TH' => 'thursday',
-          'FR' => 'friday',
-          'SA' => 'saturday',
-          'SU' => 'sunday',
-        );
 
         $dates = array();
         foreach ($byday as $day) {
-            $dayname = $daysname[$day];
+            $dayname = $this->getDaynames($day);
 
             // this week
             $dates[] = strtotime($dayname, $start);
@@ -507,6 +521,19 @@ class iCal_Event
                 return $date;
             }
         }
+    }
+
+    protected function getDaynames($day){
+        $arr = [
+          'MO' => 'monday',
+          'TU' => 'tuesday',
+          'WE' => 'wednesday',
+          'TH' => 'thursday',
+          'FR' => 'friday',
+          'SA' => 'saturday',
+          'SU' => 'sunday',
+        ];
+        return $arr[$day];
     }
 }
 

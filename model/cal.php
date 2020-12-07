@@ -71,7 +71,7 @@ EOT;
                                     $ret .= '<div class="birthday"><div>'. $name;
                                     if($bday['age']){
                                         if(isset($bday['deceased']) && $bday['deceased'] == true)
-                                            $ret .= ' would be '. $bday['age'];
+                                            $ret .= ' '. $bday['age'];
                                         else
                                             $ret .= ' turns '. $bday['age'];
                                     }
