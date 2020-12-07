@@ -1,0 +1,64 @@
+*,html,body{
+    font-family: Futura, sans-serif;
+    margin:0;
+    padding:0;
+}
+
+table.month{
+    border: 2px solid;
+    border-collapse:collapse;
+    width:277mm;
+    height:190mm;
+    margin:10mm;
+}
+
+table.month thead th{
+    height:10mm;
+    text-align: center;
+}
+
+table.month th.monthname{
+    border: 2px solid;
+    font-weight: bold;
+    font-size:20px;
+}
+
+table.month tr.daysofweek td{
+    border: 1px solid;
+    font-weight: bold;
+    font-size:16px;
+    border-collapse:collapse;
+}
+
+table.month tbody td{
+    border: 1px solid;
+    border-collapse:collapse;
+    padding:0;
+    font-size:14px;
+    width:39mm;
+    height:36mm;
+    text-align:left;
+    vertical-align: top;
+}
+
+table.month td div.day{
+    text-align:left;
+}
+
+table.month td div.day span.date{
+    font-weight: bold;
+    margin:10px;
+    font-size:20px;
+    display:block;
+}
+
+table.month td div.day div.birthday{
+    background:#99aadd;
+    font-size:12px;
+    display:block;
+    width:100%;
+}
+
+table.month td div.day div.birthday div{
+    padding:5px;
+}
