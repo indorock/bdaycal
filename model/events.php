@@ -1,3 +1,4 @@
+<pre>
 <?php
 require('./model/iCal.php');
 
@@ -52,9 +53,25 @@ class Events{
                 $name = trim(preg_replace('/\([^()]+\)/','',$name));
             if(count($this->whitelist) && !in_array(strtolower($name), $this->whitelist))
                 continue;
+            if($event['yearswed']){
+                $name = substr($name, 0, strpos($name,"Anniversary")) . $this->addOrdinalNumberSuffix($event['yearswed']) . ' Anniversary';
+            }
             $ret[$date][] = ['name' => $name];
             $ret[$date] = array_unique($ret[$date]);
         }
         return $ret;
+    }
+
+
+    protected function addOrdinalNumberSuffix($num) {
+        if (!in_array(($num % 100),array(11,12,13))){
+            switch ($num % 10) {
+                // Handle 1st, 2nd, 3rd
+                case 1:  return $num.'st';
+                case 2:  return $num.'nd';
+                case 3:  return $num.'rd';
+            }
+        }
+        return $num.'th';
     }
 }

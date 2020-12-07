@@ -134,20 +134,12 @@ class iCal
         $dates = $this->eventsByDateBetween('01-01-'.$output_year,'31-12-'.$output_year);
         foreach($dates as $date => $events){
             foreach($events as $event) {
-//            $date = $event->getOccurenceByYear($output_year);
-//            if($event->recurrence){
-//                if($event->recurrence->freq == 'YEARLY'){
-//                    if($event->recurrence->bymonthday){
-//                        $date = $output_year.'-'.str_pad($event->recurrence->bymonth,2,'0').'-'.str_pad($event->recurrence->bymonthday,2,'0');
-//                    }elseif($event->recurrence->byday){
-//
-//                    }
-//                }
-//            }else{
-//                $date = ;
-//            }
                 $dt = new Datetime($date);
-                $ret[] = ['name' => $event->title(), 'datetime' => $date, 'date' => $dt->format('Y-m-d')];
+                $arr = ['name' => $event->title(), 'datetime' => $date, 'date' => $dt->format('Y-m-d')];
+                if(preg_match('/weddingyear:([0-9]{4})/',$event->description, $m)){
+                    $arr['yearswed'] = $dt->format('Y') - $m[1];
+                }
+                $ret[] = $arr;
             }
         }
         return $ret;
