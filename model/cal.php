@@ -11,10 +11,14 @@ class Cal{
 
     public function __construct($output_year){
         $this->output_year = $output_year ?? date('Y');
-        $contacts_file = './data/contacts.csv';
-        $events_file = './data/events.ics';
-        $this->contacts = new Contacts($output_year, $contacts_file);
-        $this->events = new Events($output_year, $events_file);
+        $this->contacts = new Contacts($output_year, './data/contacts-moeder.vcf');
+        $calendars = [
+          ['name' => 'events-moeder', 'file' => './data/events-moeder.ics', 'whitelist' => []],
+          ['name' => 'canada-holidays', 'file' => 'https://www.officeholidays.com/ics-clean/canada', 'clean_labels' => true, 'whitelist' => ["st. patrick's day","victoria day","canada day","thanksgiving","remembrance day"]],
+          ['name' => 'nl-holidays', 'file' => './data/nl-feestdagen.ics', 'whitelist' => []]
+        ];
+        foreach($calendars as $cal)
+            $this->calendars[] = new Events($output_year, $cal);
     }
 
     public function show($as_pdf= false, $now = false){
@@ -22,8 +26,9 @@ class Cal{
         if($as_pdf)
             $ret .= '<link href="css/styles_pdf.css" rel="stylesheet" type="text/css" />';
         $bdays = $this->contacts->parse();
-        $events = $this->events->parse();
-//        $events = [];
+        $events = [];
+        foreach($this->calendars as $calendar)
+            $events = array_merge_recursive($events, $calendar->parse());
         if($now){
             $dt_start = new DateTime('first day of this month');
             $dt_end = clone $dt_start;
@@ -61,9 +66,20 @@ EOT;
                         $ret .= '<div class="day"><span class="date">'.$date."</span>\r\n";
                         if(array_key_exists($fulldate, $bdays)){
                             foreach($bdays[$fulldate] as $bday){
-                                $ret .= '<div class="birthday"><div>'. $bday['name'];
-                                if($bday['age'])
-                                    $ret .= ' turns '. $bday['age'];
+                                $name = preg_replace('/([A-Za-z]+) ([A-Za-z])(.+)/','$1 $2.',$bday['name']);
+                                if($bday['birthday']){
+                                    $ret .= '<div class="birthday"><div>'. $name;
+                                    if($bday['age']){
+                                        if(isset($bday['deceased']) && $bday['deceased'] == true)
+                                            $ret .= ' would be '. $bday['age'];
+                                        else
+                                            $ret .= ' turns '. $bday['age'];
+                                    }
+                                }elseif($bday['deathdate']){
+                                    $ret .= '<div class="deathdate"><div>'. $name ."† ";
+                                    if($bday['age'])
+                                        $ret .= $bday['age'] .' years ago';
+                                }
                                 $ret .= "</div></div>\r\n";
                             }
                         }

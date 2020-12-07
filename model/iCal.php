@@ -1,6 +1,5 @@
 <?php
 
-
 class iCal
 {
     /**
@@ -129,12 +128,27 @@ class iCal
         return $this;
     }
 
-    public function asArray(){
+    public function asArray($output_year){
         $ret = [];
         /** @var iCal_Event $event */
-        foreach($this->events as $event){
-            $dt = new Datetime($event->dateStart);
-            $ret[] = ['name' => $event->title(), 'datetime' => $event->dateStart, 'date' => $dt->format('Y-m-d')];
+        $dates = $this->eventsByDateBetween('01-01-'.$output_year,'31-12-'.$output_year);
+        foreach($dates as $date => $events){
+            foreach($events as $event) {
+//            $date = $event->getOccurenceByYear($output_year);
+//            if($event->recurrence){
+//                if($event->recurrence->freq == 'YEARLY'){
+//                    if($event->recurrence->bymonthday){
+//                        $date = $output_year.'-'.str_pad($event->recurrence->bymonth,2,'0').'-'.str_pad($event->recurrence->bymonthday,2,'0');
+//                    }elseif($event->recurrence->byday){
+//
+//                    }
+//                }
+//            }else{
+//                $date = ;
+//            }
+                $dt = new Datetime($date);
+                $ret[] = ['name' => $event->title(), 'datetime' => $date, 'date' => $dt->format('Y-m-d')];
+            }
         }
         return $ret;
 
@@ -263,8 +277,8 @@ class iCal_Event
             $this->uid = trim($m[1]);
 
         // Summary
-        if (preg_match('`^SUMMARY:(.*)$`m', $content, $m))
-            $this->summary = trim($m[1]);
+        if (preg_match('`^SUMMARY([^:]+)?:(.*)$`m', $content, $m))
+            $this->summary = trim($m[2]);
 
         // Description
         if (preg_match('`^DESCRIPTION:(.*)$`m', $content, $m))

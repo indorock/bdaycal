@@ -52,17 +52,22 @@ table.month td div.day span.date{
     display:block;
 }
 
-table.month td div.day div.birthday, table.month td div.day div.event{
+table.month td div.day div.birthday, table.month td div.day div.deathdate, table.month td div.day div.event{
     background:#99aadd;
     font-size:12px;
     display:block;
     width:100%;
 }
 
+table.month td div.day div.deathdate{
+    background: #000000;
+    color:#ffffff;
+}
+
 table.month td div.day div.event{
     background: #99ddaa;
 }
 
-table.month td div.day div.birthday div, table.month td div.day div.event div{
+table.month td div.day div.birthday div, table.month td div.day div.deathdate div, table.month td div.day div.event div{
     padding:5px;
 }

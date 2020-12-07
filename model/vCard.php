@@ -23,7 +23,12 @@ class vCard{
         $this->parse();
         /** @var vCard_Contact $contact */
         foreach($this->contacts as $contact){
-            $ret[] = ['Name' => $contact->getFullname(), 'Birthday' => $contact->getBirthdate(), 'noyear' => $contact->getNoyear()];
+            $arr = ['Name' => $contact->getFullname(), 'Birthday' => $contact->getBirthdate()];
+            if($contact->getNoyear())
+                $arr['noyear'] = $contact->getNoyear();
+            if($contact->getDeathdate())
+                $arr['Deathdate'] = $contact->getDeathdate();
+            $ret[] = $arr;
         }
         return $ret;
     }
@@ -50,6 +55,7 @@ class vCard_Contact{
     protected $fullname = '';
     protected $email = '';
     protected $birthdate = '';
+    protected $deathdate = '';
     protected $noyear = false;
 
     public function __construct($content = null)
@@ -67,6 +73,10 @@ class vCard_Contact{
         return $this->birthdate;
     }
 
+    public function getDeathdate(){
+        return $this->deathdate;
+    }
+
     public function getNoyear(){
         return $this->noyear;
     }
@@ -74,7 +84,6 @@ class vCard_Contact{
     public function parse($content)
     {
         $content = str_replace("\r\n ", '', $content);
-
 
         // Full name
         if (preg_match('`^FN:(.*)$`m', $content, $m))
@@ -91,8 +100,14 @@ class vCard_Contact{
                 $this->noyear = true;
                 $this->birthdate = substr($date,2,2).'-'.substr($date,4,2);
             }else{
-                $this->birthdate = substr($date,0,4).'-'.substr($date,4,2).'-'.substr($date,6,2);
+                $this->birthdate = substr($date,0,4).'-'.substr($date,5,2).'-'.substr($date,8,2);
             }
         }
+
+        // Death
+        if (preg_match('`^NOTE:death:(.*)$`m', $content, $m)){
+            $this->deathdate = trim($m[1]);
+        }
+
         return $this;
     }}

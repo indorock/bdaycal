@@ -33,22 +33,33 @@ class Contacts{
             throw new Exception('unsupported_file_format');
         }
         foreach($contacts as $contact){
-            $bday = trim($contact['Birthday']);
-            if(!$bday)
-                continue;
-            if(strpos($bday, '--') === 0 || (isset($contact['noyear']) && $contact['noyear'])){
-                $dt_bday_now = new DateTime($this->output_year.'-'.substr($bday,2));
-                $age = null;
-            }else{
-                $dt_bday = new DateTime($bday);
-                $dt_bday_now = new DateTime($this->output_year.'-'.$dt_bday->format('m-d'));
-                $age = $dt_bday_now->diff($dt_bday)->y;
-            }
-            $str_bday_now = $dt_bday_now->format('Y-m-d');
-            if(!array_key_exists($str_bday_now, $ret) || !is_array($ret[$str_bday_now]))
-                $ret[$str_bday_now] = [];
-            $ret[$str_bday_now][] = ['name' => $contact['Name'], 'age' => $age];
+            $ret = $this->getDateData($contact,$ret);
+            $ret = $this->getDateData($contact,$ret, 'Deathdate');
         }
         return $ret;
+    }
+
+    protected function getDateData($contact, &$ret, $key = 'Birthday'){
+        $day = trim($contact[$key]);
+        if(!$day)
+            return $ret;
+        if(strpos($day, '--') === 0 || (isset($contact['noyear']) && $contact['noyear'])){
+            $dt_now = new DateTime($this->output_year.'-'.substr($day,2));
+            $age = null;
+        }else{
+            $dt_day = new DateTime($day);
+            $dt_now = new DateTime($this->output_year.'-'.$dt_day->format('m-d'));
+            $age = $dt_now->diff($dt_day)->y;
+        }
+        $str_now = $dt_now->format('Y-m-d');
+        $arr = ['name' => $contact['Name'], 'age' => $age, strtolower($key) => $str_now];
+        if(isset($contact['Deathdate']))
+            $arr['deceased'] = true;
+        if(!array_key_exists($str_now, $ret) || !is_array($ret[$str_now]))
+            $ret[$str_now] = [];
+        $ret[$str_now][] = $arr;
+
+        return $ret;
+
     }
 }
