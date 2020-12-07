@@ -1,6 +1,7 @@
 <?php
 
 require('./model/contacts.php');
+require('./model/events.php');
 use Spipu\Html2Pdf\Html2Pdf;
 
 class Cal{
@@ -9,20 +10,28 @@ class Cal{
     protected $contacts = null;
 
     public function __construct($output_year){
-        if(!$output_year) throw new Exception('missing_year');
-        $this->output_year = $output_year;
-        $file = './data/contacts.csv';
-        $this->contacts = new Contacts($output_year, $file);
+        $this->output_year = $output_year ?? date('Y');
+        $contacts_file = './data/contacts.csv';
+        $events_file = './data/events.ics';
+        $this->contacts = new Contacts($output_year, $contacts_file);
+        $this->events = new Events($output_year, $events_file);
     }
 
-    public function show($as_pdf= false){
+    public function show($as_pdf= false, $now = false){
         $ret = '';
         if($as_pdf)
             $ret .= '<link href="css/styles_pdf.css" rel="stylesheet" type="text/css" />';
         $bdays = $this->contacts->parse();
-
-        $dt_start = new DateTime($this->output_year.'-01-01');
-        $dt_end = new DateTime(($this->output_year+1).'-01-01');
+        $events = $this->events->parse();
+//        $events = [];
+        if($now){
+            $dt_start = new DateTime('first day of this month');
+            $dt_end = clone $dt_start;
+            $dt_end->modify('+1 month');
+        }else{
+            $dt_start = new DateTime($this->output_year.'-01-01');
+            $dt_end = new DateTime(($this->output_year+1).'-01-01');
+        }
         $period = new DatePeriod($dt_start, new DateInterval('P1M'), $dt_end);
 
         foreach($period as $dt_month){
@@ -52,7 +61,15 @@ EOT;
                         $ret .= '<div class="day"><span class="date">'.$date."</span>\r\n";
                         if(array_key_exists($fulldate, $bdays)){
                             foreach($bdays[$fulldate] as $bday){
-                                $ret .= '<div class="birthday"><div>'. $bday['name'] .' turns '. $bday['age'] ."</div></div>\r\n";
+                                $ret .= '<div class="birthday"><div>'. $bday['name'];
+                                if($bday['age'])
+                                    $ret .= ' turns '. $bday['age'];
+                                $ret .= "</div></div>\r\n";
+                            }
+                        }
+                        if(array_key_exists($fulldate, $events)){
+                            foreach($events[$fulldate] as $event){
+                                $ret .= '<div class="event"><div>'. $event['name']."</div></div>\r\n";
                             }
                         }
                         $ret .= "</div>\r\n";

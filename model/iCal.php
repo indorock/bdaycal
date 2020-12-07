@@ -128,6 +128,17 @@ class iCal
 
         return $this;
     }
+
+    public function asArray(){
+        $ret = [];
+        /** @var iCal_Event $event */
+        foreach($this->events as $event){
+            $dt = new Datetime($event->dateStart);
+            $ret[] = ['name' => $event->title(), 'datetime' => $event->dateStart, 'date' => $dt->format('Y-m-d')];
+        }
+        return $ret;
+
+    }
 }
 
 
