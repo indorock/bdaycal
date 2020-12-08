@@ -78,7 +78,7 @@ table.month td div.day div.birthday div, table.month td div.day div.deathdate di
     height: 30px;
 }
 
-#menu select#yearselect, #menu #monthselect, #nowlink{
+#menu #yearselect, #menu #monthselect, #yearlink, #nowlink, #pdflink{
     float:left;
     margin-right:30px;
 }
@@ -94,7 +94,7 @@ table.month td div.day div.birthday div, table.month td div.day div.deathdate di
     text-decoration: none;
 }
 
-#menu #nowlink a{
+#menu #yearlink a, #menu #nowlink a{
     color: #337755;
     font-weight: bold;
     text-decoration: none;

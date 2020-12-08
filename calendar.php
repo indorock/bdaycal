@@ -18,10 +18,14 @@ function show_calendar(){
         $year = (int)date('Y');
     }
 
-    $cal = new Cal($year);
-    if(!$as_pdf)
-        include('./templates/head.php');
-    echo $cal->show($as_pdf, $month);
-    if(!$as_pdf)
-        include('./templates/end.php');
+    try{
+        $cal = new Cal($year);
+        if(!$as_pdf)
+            include('./templates/head.php');
+        echo $cal->show($as_pdf, $month);
+        if(!$as_pdf)
+            include('./templates/end.php');
+    }catch(Exception $e){
+        echo $e->getMessage();
+    }
 }

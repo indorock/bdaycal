@@ -120,11 +120,17 @@ EOT;
         $end_year = $year + 4;
         $ret = '<div id="menu">';
         // year dropdown
-        $ret .= '<select id="yearselect">';
+
+        $ret .= '<div id="yearselect">CHOOSE YEAR <select>';
         for($y=$start_year;$y<=$end_year;$y++){
             $ret .= '<option'. ($this->output_year == $y ? ' selected="true"':'') .' value="'. $y .'">'. $y .'</option>';
         }
-        $ret .= '</select>';
+        $ret .= '</select></div>';
+
+        if($this->output_month)
+            $ret .= '<div id="nowlink"><a href="'.$baseurl.'?y='.$this->output_year.'">FULL '. $this->output_year .'</a></div>';
+        else
+            $ret .= '<div id="yearlink"><a href="'.$baseurl.'?now">CURRENT MONTH</a></div>';
 
         // month paging
         if($this->output_month){
@@ -135,15 +141,14 @@ EOT;
             $dt_prev->sub($interval);
             $dt_next->add($interval);
             $ret .= '<div id="monthselect">';
-            $ret .= '<div><a href="'.$baseurl.'?y='.$dt_prev->format('Y').'&m='.$dt_prev->format('m').'">Previous</a></div>';
+            $ret .= '<div><a href="'.$baseurl.'?y='.$dt_prev->format('Y').'&m='.$dt_prev->format('m').'">Previous Month</a></div>';
             $ret .= '<div>|</div>';
-            $ret .= '<div><a href="'.$baseurl.'?y='.$dt_next->format('Y').'&m='.$dt_next->format('m').'">Next</a></div>';
+            $ret .= '<div><a href="'.$baseurl.'?y='.$dt_next->format('Y').'&m='.$dt_next->format('m').'">Next Month</a></div>';
             $ret .= '</div>';
         }
-
-        $ret .= '<div id="nowlink"><a href="'.$baseurl.'?now">CURRENT MONTH</a></div>';
         $ret .= '<div id="pdflink"><a target="_blank" href="'.$baseurl.'?pdf&y='.$this->output_year.'">VIEW PDF</a></div>';
         $ret .= '</div>';
+
         return $ret;
     }
 
