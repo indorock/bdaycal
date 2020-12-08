@@ -1,3 +1,4 @@
+<pre>
 <?php
 
 require('./model/contacts.php');
@@ -12,12 +13,10 @@ class Cal{
 
     public function __construct($output_year){
         $this->output_year = $output_year ?? date('Y');
-        $this->contacts = new Contacts($this->output_year, './data/contacts-moeder.vcf');
-        $calendars = [
-          ['name' => 'events-moeder', 'file' => './data/events-moeder.ics', 'whitelist' => []],
-          ['name' => 'canada-holidays', 'file' => 'https://www.officeholidays.com/ics-clean/canada', 'clean_labels' => true, 'whitelist' => ["st. patrick's day","victoria day","canada day","thanksgiving","remembrance day"]],
-          ['name' => 'nl-holidays', 'file' => './data/nl-feestdagen.ics', 'whitelist' => []]
-        ];
+        $settings = json_decode(file_get_contents('./data/settings.json'));
+
+        $this->contacts = new Contacts($this->output_year, $settings->contacts);
+        $calendars = $settings->calendars;
         foreach($calendars as $cal)
             $this->calendars[] = new Events($this->output_year, $cal);
     }

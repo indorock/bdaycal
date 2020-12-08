@@ -1,0 +1,7 @@
+{
+  "contacts": "./data/path_to_vcf.vcf",
+  "calendars": [
+    {"name": "calendar1", "file": "./data/myevents.ics", "whitelist": []},
+    {"name": "canada-holidays", "file": "https://www.officeholidays.com/ics-clean/canada", "clean_labels": true, "whitelist": ["st. patrick's day","victoria day","canada day","thanksgiving","remembrance day"]},
+  ]
+}

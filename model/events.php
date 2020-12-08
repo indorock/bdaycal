@@ -9,11 +9,10 @@ class Events{
     protected $whitelist = [];
 
     public function __construct($output_year, $calendar_data) {
-        $file = $calendar_data['file'];
-        $this->clean_labels = isset($calendar_data['clean_labels']);
-        if(isset($calendar_data['whitelist']))
-            $this->whitelist = $calendar_data['whitelist'];
-
+        $file = $calendar_data->file;
+        $this->clean_labels = isset($calendar_data->clean_labels);
+        if(isset($calendar_data->whitelist))
+            $this->whitelist = $calendar_data->whitelist;
         if(!$output_year) throw new Exception('missing_year');
         if(!$file) throw new Exception('missing_input_file');
         $this->file = $file;
