@@ -117,7 +117,7 @@ EOT;
         $dt = new DateTime();
         $year = $dt->format('Y');
         $start_year = $year - 5;
-        $end_year = $year + 1;
+        $end_year = $year + 4;
         $ret = '<div id="menu">';
         // year dropdown
         $ret .= '<select id="yearselect">';
