@@ -8,7 +8,10 @@ class Contacts{
 
     public function __construct($output_year, $file) {
         if(!$output_year) throw new Exception('missing_year');
-        if(!$file) throw new Exception('missing_input_file');
+        if(!$file){
+            echo "missing_contacts_input_file";
+            return;
+        }
         $this->file = $file;
         $this->output_year = $output_year;
     }
@@ -16,6 +19,9 @@ class Contacts{
     public function parse(){
 
         $ret = [];
+        if(!$this->file){
+            return [];
+        }
         $parts = explode('.', $this->file);
         if(count($parts) < 2)
             throw new Exception('filename_bad_format');
@@ -45,7 +51,9 @@ class Contacts{
         $day = trim($contact[$key]);
         $age = null;
         if(strpos($day, '--') === 0 || (isset($contact['noyear']) && $contact['noyear'])){
-            $dt_now = new DateTime($this->output_year.'-'.substr($day,2));
+        $month = substr($day,strpos($day,'-')+1,2);
+        $day = substr($day,strrpos($day,'-')+1,2);
+            $dt_now = new DateTime($this->output_year.'-'.$month.'-'.$day);
         }else{
             $dt_day = new DateTime($day);
             $dt_now = new DateTime($this->output_year.'-'.$dt_day->format('m-d'));

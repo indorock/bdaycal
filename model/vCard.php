@@ -36,11 +36,10 @@ class vCard{
     public function parse()
     {
         $this->content = str_replace("\r\n ", '', $this->content);
-
         // Contacts
         preg_match_all('`BEGIN:VCARD(.+)END:VCARD`Us', $this->content, $m);
         foreach ($m[0] as $c) {
-            if($this->bdays_only && !preg_match('`^BDAY:(.*)$`m', $c, $m))
+            if($this->bdays_only && !preg_match(vCard_Contact::$bday_regexp, $c, $m))
                 continue;
             $this->contacts[] = new vCard_Contact($c);
         }
@@ -57,6 +56,7 @@ class vCard_Contact{
     protected $birthdate = '';
     protected $deathdate = '';
     protected $noyear = false;
+    public static $bday_regexp = '`^BDAY(;X-APPLE-OMIT-YEAR=[0-9]{4})?:(.*)$`m';
 
     public function __construct($content = null)
     {
@@ -94,9 +94,12 @@ class vCard_Contact{
             $this->email= trim($m[2]);
 
         // Birthdate
-        if (preg_match('`^BDAY:(.*)$`m', $content, $m)){
-            $date = trim($m[1]);
-            if(preg_match('/\-\-[0-9]{4}/', $date, $matches)){
+        if (preg_match(self::$bday_regexp, $content, $m)){
+            $date = trim($m[2]);
+            if(preg_match('/X-APPLE-OMIT-YEAR/',$content)) {
+                $this->noyear = true;
+                $this->birthdate = substr($date,0,4).'-'.substr($date,5,2).'-'.substr($date,8,2);
+            }elseif(preg_match('/\-\-[0-9]{4}/', $date, $matches)){
                 $this->noyear = true;
                 $this->birthdate = substr($date,2,2).'-'.substr($date,4,2);
             }else{

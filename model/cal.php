@@ -9,6 +9,7 @@ class Cal{
     protected $output_year = null;
     protected $output_month = null;
     protected $contacts = null;
+    protected $calendars = null;
 
     public function __construct($output_year){
         $this->output_year = $output_year ?? date('Y');
@@ -81,8 +82,9 @@ EOT;
                                     }
                                 }elseif($bday['deathdate']){
                                     $ret .= '<div class="deathdate"><div>'. $name ."† ";
-                                    if($bday['age'])
-                                        $ret .= $bday['age'] .' years ago';
+                                    if($years = $bday['age']){
+                                        $ret .= $years .' year'.($years > 1? 's':'').' ago';
+                                    }
                                 }
                                 $ret .= "</div></div>\r\n";
                             }

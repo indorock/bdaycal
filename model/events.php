@@ -10,7 +10,7 @@ class Events{
 
     public function __construct($output_year, $calendar_data) {
         $file = $calendar_data->file;
-        $this->clean_labels = isset($calendar_data->clean_labels);
+        $this->clean_labels = isset($calendar_data->clean_labels) && $calendar_data->clean_labels == true;
         if(isset($calendar_data->whitelist))
             $this->whitelist = $calendar_data->whitelist;
         if(!$output_year) throw new Exception('missing_year');
@@ -22,6 +22,7 @@ class Events{
     public function parse(){
 
         $is_url = preg_match('/https?:\/\//', $this->file, $m);
+        $outevents = [];
         $ret = [];
         $parts = explode('.', $this->file);
         if(!$is_url && count($parts) < 2)
@@ -41,19 +42,22 @@ class Events{
             throw new Exception('unsupported_file_format');
         }
         foreach($events as $event){
+            $name = $event['name'];
+            if($this->clean_labels) {
+                $name = trim(preg_replace('/\([^()]+\)/', '', $name));
+            }
+            if(in_array($name, $outevents) || (count($this->whitelist) && !in_array(strtolower($name), $this->whitelist))) {
+                continue;
+            }
             $date = $event['date'];
             if(substr($date,0,4) != $this->output_year)
                 continue;
             if(!array_key_exists($date, $ret) || !is_array($ret[$date]))
                 $ret[$date] = [];
-            $name = $event['name'];
-            if($this->clean_labels)
-                $name = trim(preg_replace('/\([^()]+\)/','',$name));
-            if(count($this->whitelist) && !in_array(strtolower($name), $this->whitelist))
-                continue;
             if(isset($event['yearswed'])){
                 $name = substr($name, 0, strpos($name,"Anniversary")) . $this->addOrdinalNumberSuffix($event['yearswed']) . ' Anniversary';
             }
+            $outevents[] = $name;
             $ret[$date][] = $name;
             $ret[$date] = array_unique($ret[$date]);
         }
