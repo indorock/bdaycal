@@ -136,7 +136,7 @@ class iCal
             foreach($events as $event) {
                 $dt = new Datetime($date);
                 $arr = ['name' => $event->title(), 'datetime' => $date, 'date' => $dt->format('Y-m-d')];
-                if(preg_match('/weddingyear:([0-9]{4})/',$event->description, $m)){
+                if($event->description && preg_match('/weddingyear:([0-9]{4})/',$event->description, $m)){
                     $arr['yearswed'] = $dt->format('Y') - $m[1];
                 }
                 $ret[] = $arr;
